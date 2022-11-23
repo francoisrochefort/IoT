@@ -12,6 +12,12 @@ class UsbApi(private val context: Context) {
 
     class NoUsbDriver : Exception()
 
+    lateinit var port: UsbSerialPort
+
+    fun write(command: String) {
+        port.write(command.toByteArray(Charsets.US_ASCII), 100)
+    }
+
     fun start(listener: SerialInputOutputManager.Listener) {
         val manager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
         val availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
@@ -31,7 +37,8 @@ class UsbApi(private val context: Context) {
             Thread.sleep(500)
         }
         val connection = manager.openDevice(driver.device)
-        val port: UsbSerialPort = driver.ports.first()
+//        val port: UsbSerialPort = driver.ports.first()
+        port = driver.ports.first()
         port.open(connection)
         port.setParameters(BAUD_RATE, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
         val usbIoManager = SerialInputOutputManager(port, listener)

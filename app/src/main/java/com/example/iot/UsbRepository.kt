@@ -26,6 +26,10 @@ sealed class UsbEvent {
 
 class UsbRepository(private val usbApi: UsbApi) {
 
+    fun send(command: String) {
+        usbApi.write(command)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun eventFlow() = callbackFlow<UsbEvent> {
 

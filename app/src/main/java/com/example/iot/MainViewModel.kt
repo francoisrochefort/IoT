@@ -22,6 +22,16 @@ class MainViewModel @Inject constructor(private val repo: UsbRepository) : ViewM
     var debugString by GlobalUsbRepository.debugString
         private set
 
+    var command by mutableStateOf("<CA00>")
+
+    fun onCommandChange(command: String) {
+        this.command = command
+    }
+
+    fun onSend() {
+        repo.send(command)
+    }
+
     init {
         viewModelScope.launch {
             repo.eventFlow().collect { event ->
